@@ -252,7 +252,7 @@ public static class CopilotHelper
                 if (obj.TryGetValue("type", StringComparison.OrdinalIgnoreCase, out var typeToken) && typeToken.ToString() == "SSS")
                 {
                     var task = obj.ToObject<SSSCopilotModel>();
-                    if (!Instances.VersionUpdateDialogViewModel.IsDebugVersion())
+                    if (!VersionHelper.IsDebugVersion())
                     {
                         bool curParsed = SemVersion.TryParse(VersionUpdateSettingsUserControlModel.CoreVersion, SemVersionStyles.AllowLowerV, out var currentVer);
                         bool require = SemVersion.TryParse(task?.MinimumRequired, SemVersionStyles.AllowLowerV | SemVersionStyles.OptionalPatch, out var requireVer);
@@ -275,7 +275,7 @@ public static class CopilotHelper
                 else
                 {
                     var task = obj.ToObject<CopilotModel>();
-                    if (!Instances.VersionUpdateDialogViewModel.IsDebugVersion())
+                    if (!VersionHelper.IsDebugVersion())
                     {
                         bool curParsed = SemVersion.TryParse(VersionUpdateSettingsUserControlModel.CoreVersion, SemVersionStyles.AllowLowerV, out var currentVer);
                         bool require = SemVersion.TryParse(task?.MinimumRequired, SemVersionStyles.AllowLowerV | SemVersionStyles.OptionalPatch, out var requireVer);

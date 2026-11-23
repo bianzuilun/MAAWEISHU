@@ -173,7 +173,6 @@ public class SettingsViewModel : Screen
         InitConfiguration();
         InitUiSettings();
         InitConnectConfig();
-        InitVersionUpdate();
     }
 
     public SettingItemViewModel GetSettingItemByKey(string key)
@@ -335,14 +334,6 @@ public class SettingsViewModel : Screen
         ConnectSettings.ConnectAddressHistory.CollectionChanged += (_, _) => {
             ConfigFactory.CurrentConfig.Gui.ConnectSettings.AddressHistory = [.. ConnectSettings.ConnectAddressHistory];
         };
-    }
-
-    private void InitVersionUpdate()
-    {
-        if (VersionUpdateSettings is { VersionType: VersionUpdateSettingsUserControlModel.UpdateVersionType.Nightly, AllowNightlyUpdates: false })
-        {
-            VersionUpdateSettings.VersionType = VersionUpdateSettingsUserControlModel.UpdateVersionType.Beta;
-        }
     }
 
     #endregion Init
@@ -682,7 +673,7 @@ public class SettingsViewModel : Screen
 
     #region SettingsGuide
 
-    public static int GuideMaxStep => 7;
+    public static int GuideMaxStep => 6;
 
     public int GuideStepIndex
     {
@@ -1366,17 +1357,7 @@ public class SettingsViewModel : Screen
     {
         var rvm = (RootViewModel)this.Parent;
 
-        var newVersionFoundInfo = VersionUpdateSettings.NewVersionFoundInfo;
         var uiVersion = VersionUpdateSettingsUserControlModel.UiVersion;
-        var startupUpdateCheck = VersionUpdateSettings.StartupUpdateCheck;
-        var isDebug = Instances.VersionUpdateDialogViewModel.IsDebugVersion();
-
-        if (newVersionFoundInfo != uiVersion && !isDebug && !string.IsNullOrEmpty(newVersionFoundInfo) && startupUpdateCheck)
-        {
-            rvm.WindowVersionUpdateInfo = $"{newVersionFoundInfo}".Trim();
-        }
-
-        rvm.WindowResourceUpdateInfo = VersionUpdateSettings.NewResourceFoundInfo;
 
         string prefix = ConfigFactory.CurrentConfig.Gui.WindowTitlePrefix;
         if (!string.IsNullOrEmpty(prefix))

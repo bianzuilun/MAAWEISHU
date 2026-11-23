@@ -43,7 +43,6 @@ using static MaaWpfGui.Models.PostActionSetting;
 using static MaaWpfGui.ViewModels.UI.CopilotViewModel;
 using static MaaWpfGui.ViewModels.UI.OverlayViewModel;
 using static MaaWpfGui.ViewModels.UI.ToolboxViewModel;
-using static MaaWpfGui.ViewModels.UserControl.Settings.VersionUpdateSettingsUserControlModel;
 
 namespace MaaWpfGui.Helper;
 
@@ -978,32 +977,14 @@ public class ConfigConverter
         ConfigurationHelper.SwitchConfiguration(currentConfigName);
         ConfigFactory.SwitchConfig(currentConfigName);
 
-        // 更新设置
+        // 网络代理设置（旧配置节点名仍为 VersionUpdate.*）
         {
-            ConfigFactory.Root.Update.Name = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.VersionName, string.Empty);
-            ConfigFactory.Root.Update.UpdatePackage = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.VersionUpdatePackage, string.Empty);
-            ConfigFactory.Root.Update.IsFirstBoot = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.VersionUpdateIsFirstBoot, false);
-            ConfigFactory.Root.Update.DoNotShowUpdate = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.VersionUpdateDoNotShowUpdate, false);
+            ConfigFactory.Root.Update.Proxy = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.UpdateProxy, string.Empty);
+            ConfigFactory.Root.Update.ProxyType = CapitalizeFirst(ConfigurationHelper.GetGlobalValue(ConfigurationKeys.ProxyType, "Http"));
             ConfigurationHelper.DeleteGlobalValue(ConfigurationKeys.VersionName, out var _);
             ConfigurationHelper.DeleteGlobalValue(ConfigurationKeys.VersionUpdatePackage, out var _);
             ConfigurationHelper.DeleteGlobalValue(ConfigurationKeys.VersionUpdateIsFirstBoot, out var _);
             ConfigurationHelper.DeleteGlobalValue(ConfigurationKeys.VersionUpdateDoNotShowUpdate, out var _);
-
-            ConfigFactory.Root.Update.VersionType = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.VersionType, UpdateVersionType.Stable);
-            ConfigFactory.Root.Update.AllowNightlyUpdates = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.AllowNightlyUpdates, false);
-            ConfigFactory.Root.Update.HasAcknowledgedNightlyWarning = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.HasAcknowledgedNightlyWarning, false);
-            ConfigFactory.Root.Update.UpdateSource = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.UpdateSource, UpdateSource.GitHub);
-            ConfigFactory.Root.Update.ForceGithubGlobalSource = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.ForceGithubGlobalSource, false);
-            ConfigFactory.Root.Update.MirrorChyanCdk = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.MirrorChyanCdk, string.Empty);
-            ConfigFactory.Root.Update.MirrorChyanCdkExpiredTime = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.MirrorChyanCdkExpiredTime, 0L);
-            ConfigFactory.Root.Update.CheckOnStartup = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.StartupUpdateCheck, true);
-            ConfigFactory.Root.Update.CheckOnSchedule = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.UpdateAutoCheck, false);
-            ConfigFactory.Root.Update.Proxy = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.UpdateProxy, string.Empty);
-            ConfigFactory.Root.Update.ProxyType = CapitalizeFirst(ConfigurationHelper.GetGlobalValue(ConfigurationKeys.ProxyType, "Http"));
-            ConfigFactory.Root.Update.AutoDownloadUpdatePackage = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.AutoDownloadUpdatePackage, true);
-            ConfigFactory.Root.Update.AutoInstallUpdatePackage = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.AutoInstallUpdatePackage, false);
-            ConfigFactory.Root.Update.ShowUpdaterProgress = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.ShowUpdaterProgress, true);
-            ConfigFactory.Root.Update.ShowUpdaterConsole = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.ShowUpdaterConsole, false);
             ConfigurationHelper.DeleteGlobalValue(ConfigurationKeys.VersionType, out var _);
             ConfigurationHelper.DeleteGlobalValue(ConfigurationKeys.AllowNightlyUpdates, out var _);
             ConfigurationHelper.DeleteGlobalValue(ConfigurationKeys.HasAcknowledgedNightlyWarning, out var _);

@@ -43,7 +43,7 @@
     <system:String x:Key="TransitionSpeedFast">快速</system:String>
     <system:String x:Key="TransitionSpeedNone">無動畫</system:String>
     <system:String x:Key="HotKeySettings">熱鍵設定</system:String>
-    <system:String x:Key="UpdateSettings">更新設定</system:String>
+    <system:String x:Key="UpdateSettings">版本資訊</system:String>
     <system:String x:Key="AchievementSettings">成就設定</system:String>
     <system:String x:Key="AboutUs">關於我們</system:String>
     <system:String x:Key="IssueReport">問題回饋</system:String>
@@ -1630,13 +1630,13 @@ C:\leidian\LDPlayer9
     <system:String x:Key="DelegatedUpdateFailureReasonPackageError">更新包或其解壓產物可能已損毀或不完整。</system:String>
     <system:String x:Key="DelegatedUpdateFailureReasonUnknown">未知原因，詳情請查看 debug 資料夾中的 gui.log。</system:String>
     <system:String x:Key="UpdateApplyMissingUpdater">更新無法繼續，因為缺少 MAA.Updater.exe，無法啟動外部更新程式。本次更新已取消。此檔案可能已被手動刪除，也可能被某些安全軟體攔截或刪除。若是安全軟體所致，請前往對應軟體的隔離區尋找並還原該檔案，並{key=SecuritySoftwareWhitelistTips}\n\n{key=FullPackageUpgradeTips}</system:String>
-    <system:String x:Key="ResourceBroken">檔案損毀，可嘗試自動修復（重新下載完整安裝檔），或暫不處理、稍後拖入本機完整包更新。\n\n{key=FullPackageUpgradeTips}</system:String>
+    <system:String x:Key="ResourceBroken">檔案損毀，請重新下載完整安裝檔。\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityCheckTitle">安裝檔案缺失</system:String>
     <system:String x:Key="ResourceIntegrityCheckDesc">偵測到 {0} 個安裝檔案缺失（{1}），部分功能可能無法使用。檔案可能被某些安全軟體攔截或刪除，也可能被手動刪除。若為安全軟體所致，請前往對應軟體的隔離區尋找並還原檔案，並{key=SecuritySoftwareWhitelistTips}\n\n也可按下方說明手動重灌：\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityRepairYes">自動修復（下載完整安裝檔並在重新啟動後還原）</system:String>
     <system:String x:Key="ResourceIntegrityRepairNo">暫不處理，繼續啟動</system:String>
     <system:String x:Key="CoreLoadingTip">MAA 核心尚未載入完成，請稍後再試。</system:String>
-    <system:String x:Key="ResourceBrokenTaskBlocked">檔案損毀，無法開始任務。請依啟動時的提示修復檔案，或重新下載完整安裝檔後重新啟動 MAA。</system:String>
+    <system:String x:Key="ResourceBrokenTaskBlocked">檔案損毀，無法開始任務。請重新下載完整安裝檔後重新啟動 MAA。</system:String>
     <system:String x:Key="ResourceIntegrityRepairDownloading">正在下載完整安裝檔以修復安裝…</system:String>
     <system:String x:Key="ResourceIntegrityRepairFailed">自動修復失敗，請按提示手動處理。\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityRepairCanceled">已取消自動修復，下次啟動時仍會提醒</system:String>
@@ -1990,7 +1990,7 @@ C:\leidian\LDPlayer9
     <system:String x:Key="Click">點擊</system:String>
     <system:String x:Key="Swipe">滑動</system:String>
     <system:String x:Key="SetUnitLocation">設定單位座標</system:String>
-    <system:String x:Key="UnsupportedLevel">不支援的關卡，請檢查關卡名稱或前往 ｢{key=Settings} - {key=UpdateSettings} - {key=ResourceUpdate}｣ 嘗試更新資源版本！</system:String>
+    <system:String x:Key="UnsupportedLevel">不支援的關卡，請檢查關卡名稱！</system:String>
     <system:String x:Key="Copilot.UnsupportedSkill">{0} 不支援技能 {1}, 不再選擇技能</system:String>
     <system:String x:Key="Copilot.EliteEmpty">{0} 未設定精英等級要求, 但其他屬性要求 精{1}, 已自動補全</system:String>
     <system:String x:Key="Copilot.EliteAjust">{0} 設定為要求 精{1}, 但是其他屬性需求 精{2}, 已自動調整</system:String>

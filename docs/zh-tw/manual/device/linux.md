@@ -68,7 +68,6 @@ MAA WPF GUI 當前可以透過 Wine 執行。MAA 已採用自包含部署方式�
 - Wine-staging 使用者需要關閉 `winecfg` 中的 `隱藏 Wine 版本` 選項，以便 MAA 正確偵測 Wine 環境。
 - Wine 的 Light 主題會導致 WPF 中部分文字顏色異常，建議在 `winecfg` 中切換到無主題（Windows 經典主題）。
 - Wine 使用舊式 XEmbed 系統匣圖示，在 GNOME 下可能無法正常工作。
-- 使用 Linux 原生 MaaCore 時暫不支援自動更新（~~更新程式：我想我應該下載個 Windows 版~~）
 
 ### 使用 Python
 

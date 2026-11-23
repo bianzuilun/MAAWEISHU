@@ -43,7 +43,7 @@
     <system:String x:Key="TransitionSpeedFast">高速</system:String>
     <system:String x:Key="TransitionSpeedNone">なし</system:String>
     <system:String x:Key="HotKeySettings">ホットキー設定</system:String>
-    <system:String x:Key="UpdateSettings">アップデート設定</system:String>
+    <system:String x:Key="UpdateSettings">バージョン情報</system:String>
     <system:String x:Key="AchievementSettings">実績設定</system:String>
     <system:String x:Key="AboutUs">私たちについて</system:String>
     <system:String x:Key="IssueReport">問題報告</system:String>
@@ -1631,13 +1631,13 @@ C:\leidian\LDPlayer9
     <system:String x:Key="DelegatedUpdateFailureReasonPackageError">更新パッケージまたはその展開ファイルが破損・不完全な可能性があります。</system:String>
     <system:String x:Key="DelegatedUpdateFailureReasonUnknown">原因は不明です。詳細は debug フォルダーの gui.log を確認してください。</system:String>
     <system:String x:Key="UpdateApplyMissingUpdater">MAA.Updater.exe が見つからないため、外部更新プログラムを起動できず、更新を続行できませんでした。今回の更新はキャンセルされました。このファイルは手動で削除されたか、セキュリティソフトによってブロックまたは削除された可能性があります。セキュリティソフトが原因の場合は、その隔離領域を確認してファイルを復元し、{key=SecuritySoftwareWhitelistTips}\n\n{key=FullPackageUpgradeTips}</system:String>
-    <system:String x:Key="ResourceBroken">リソースファイルが破損しています。自動修復（完全なパッケージの再ダウンロード）を試すか、今はそのまま続けて、後でローカルの完全パッケージをドラッグして更新してください。\n\n{key=FullPackageUpgradeTips}</system:String>
+    <system:String x:Key="ResourceBroken">リソースファイルが破損しています。完全なパッケージを再ダウンロードしてください。\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityCheckTitle">インストールファイルの欠落</system:String>
     <system:String x:Key="ResourceIntegrityCheckDesc">{0} 個のインストールファイルが欠落していることが検出されました（{1}）。一部の機能が使用できない可能性があります。ファイルがセキュリティソフトによってブロックまたは削除されたか、手動で削除された可能性があります。セキュリティソフトが原因の場合は、その隔離領域を確認してファイルを復元し、{key=SecuritySoftwareWhitelistTips}\n\n以下の説明に従って手動で再インストールすることもできます：\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityRepairYes">自動修復（完全パッケージをダウンロードし、再起動後に復元）</system:String>
     <system:String x:Key="ResourceIntegrityRepairNo">後で行う</system:String>
     <system:String x:Key="CoreLoadingTip">MAA のコアは読み込み中です。少し待ってから再度お試しください。</system:String>
-    <system:String x:Key="ResourceBrokenTaskBlocked">リソースが破損しているためタスクを開始できません。起動時の案内に従ってリソースを修復するか、完全なパッケージを再ダウンロードして MAA を再起動してください。</system:String>
+    <system:String x:Key="ResourceBrokenTaskBlocked">リソースが破損しているためタスクを開始できません。完全なパッケージを再ダウンロードして MAA を再起動してください。</system:String>
     <system:String x:Key="ResourceIntegrityRepairDownloading">インストールを修復するため、完全パッケージをダウンロードしています…</system:String>
     <system:String x:Key="ResourceIntegrityRepairFailed">自動修復に失敗しました。表示された手順に従って手動で処理してください。\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityRepairCanceled">自動修復をキャンセルしました。次回起動時に再度通知されます。</system:String>
@@ -1991,7 +1991,7 @@ C:\leidian\LDPlayer9
     <system:String x:Key="Click">クリック</system:String>
     <system:String x:Key="Swipe">スワイプ</system:String>
     <system:String x:Key="SetUnitLocation">ユニット座標を設定</system:String>
-    <system:String x:Key="UnsupportedLevel">サポートされていないステージです。ステージ名を確認するか、｢{key=Settings} - {key=UpdateSettings} - {key=ResourceUpdate}｣ に移動してリソースバージョンを更新してみてください！</system:String>
+    <system:String x:Key="UnsupportedLevel">サポートされていないステージです。ステージ名を確認してください！</system:String>
     <system:String x:Key="Copilot.UnsupportedSkill">{0} のスキル {1} はサポートされないので、スキルを選択されなくなります。</system:String>
     <system:String x:Key="Copilot.EliteEmpty">{0} エリートレベルの要件は設定されていませんでしたが、他の属性の要件はエリート{1}です。これは自動入力されました。</system:String>
     <system:String x:Key="Copilot.EliteAjust">{0} エリート{1}の要件が設定されていましたが、他の属性の要件はエリート{2}です。これは自動調整されました。</system:String>

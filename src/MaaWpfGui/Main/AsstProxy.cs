@@ -692,11 +692,7 @@ public class AsstProxy
             AsstSetStaticOption(AsstStaticOptionKey.GpuOCR, x.DeviceSelector);
         }
 
-        // 上次更新失败的持久标志存在时跳过资源加载（安装可能处于半更新状态），视同资源损坏走修复流程；
-        // 失败标志随完整包安装清场移除，因此修复成功重启后本检查自然不再命中
-        bool delegatedUpdateFailure = PendingUpdateApplier.TryReadDelegatedUpdateFailure(out string? delegatedUpdateFailureReason);
-
-        bool loaded = !delegatedUpdateFailure && LoadResource();
+        bool loaded = LoadResource();
 
         var handle = MaaService.AsstCreateEx(_callback, AsstHandle.Zero);
         lock (_handleLock)
@@ -710,19 +706,6 @@ public class AsstProxy
 
             // 先置标志再弹窗：弹窗显示期间启动自动运行、热键/托盘/远程触发的任务都须被拦
             Bootstrapper.MarkResourceBroken();
-
-            if (delegatedUpdateFailure)
-            {
-                // 上次更新失败：先弹说明窗展示失败原因，再由下方资源损坏弹窗提供修复入口
-                MessageBoxHelper.Show(
-                    LocalizationHelper.GetStringFormat(
-                        "DelegatedUpdateFailureDetected",
-                        PendingUpdateApplier.GetDelegatedUpdateFailureDescription(delegatedUpdateFailureReason)),
-                    LocalizationHelper.GetString("Error"),
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-
             ShowResourceBrokenPrompt();
         }
 
@@ -762,7 +745,7 @@ public class AsstProxy
                     ? SettingsViewModel.StartSettings.OpenPcClientAfterLaunch
                     : SettingsViewModel.StartSettings.OpenEmulatorAfterLaunch;
 
-                // 更新重启链写入的 --skip-startup-auto-run：跳过启动后自动开任务/连接目标
+                // --skip-startup-auto-run：跳过启动后自动开任务/连接目标
                 if (Bootstrapper.ShouldSkipStartupAutoRun)
                 {
                     _logger.Information("Skip startup auto-run due to {Arg}", Bootstrapper.SkipStartupAutoRunArg);
@@ -816,29 +799,15 @@ public class AsstProxy
 
     private static void ShowResourceBrokenPrompt()
     {
-        // Show 内部自行切 UI 线程，此处阻塞后台任务直至用户选择
-        var repair = MessageBoxHelper.Show(
+        // Show 内部自行切 UI 线程，此处阻塞后台任务直至用户确认
+        MessageBoxHelper.Show(
             LocalizationHelper.GetString("ResourceBroken"),
             LocalizationHelper.GetString("Error"),
-            MessageBoxButton.YesNo,
+            MessageBoxButton.OK,
             MessageBoxImage.Error,
             iconKey: ResourceToken.FatalGeometry,
-            iconBrushKey: ResourceToken.DangerBrush,
-            yes: LocalizationHelper.GetString("ResourceIntegrityRepairYes"),
-            no: LocalizationHelper.GetString("ResourceIntegrityRepairNo"));
-        if (repair == MessageBoxResult.Yes)
-        {
-            _logger.Information("User chose auto repair on resource-broken dialog");
-
-            // 修复流程需要 UI 上下文；期间应用保持运行（任务启动已被标志拦截），
-            // 另一入口已在修复时由防重入兜底直接返回
-            _ = Execute.OnUIThreadAsync(() => _ = Instances.VersionUpdateDialogViewModel.RunIntegrityRepairAsync());
-        }
-        else
-        {
-            // 暂不处理：保持运行，保留拖入本地完整包等后续更新途径；任务入口已被标志拦截
-            _logger.Information("User declined auto repair on resource-broken dialog, continuing");
-        }
+            iconBrushKey: ResourceToken.DangerBrush);
+        _logger.Information("Resource-broken dialog acknowledged by user");
     }
 
     /// <summary>
@@ -2681,7 +2650,6 @@ public class AsstProxy
 
             case "UnsupportedLevel":
                 Instances.CopilotViewModel.AddLog(LocalizationHelper.GetString("UnsupportedLevel") + subTaskDetails!["level"], UiLogColor.Error);
-                _ = ResourceUpdater.ResourceUpdateAndReloadAsync();
                 break;
 
             case "CustomInfrastRoomGroupsMatch":

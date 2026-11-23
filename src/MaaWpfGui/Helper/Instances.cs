@@ -77,8 +77,6 @@ public static class Instances
 
     public static CopilotViewModel CopilotViewModel { get; private set; }
 
-    public static VersionUpdateDialogViewModel VersionUpdateDialogViewModel { get; private set; }
-
     public static AnnouncementDialogViewModel AnnouncementDialogViewModel { get; private set; }
 
     public static AsstProxy AsstProxy { get; private set; }
@@ -114,7 +112,6 @@ public static class Instances
         HttpService = container.Get<HttpService>();
         MaaApiService = container.Get<MaaApiService>();
 
-        VersionUpdateDialogViewModel = container.Get<VersionUpdateDialogViewModel>();
         AnnouncementDialogViewModel = container.Get<AnnouncementDialogViewModel>();
         AsstProxy = container.Get<AsstProxy>();
 

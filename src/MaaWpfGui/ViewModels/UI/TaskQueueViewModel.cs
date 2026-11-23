@@ -348,18 +348,6 @@ public class TaskQueueViewModel : Screen
         return true;
     }
 
-    /// <summary>
-    /// Gets or private sets the single download-related log item.
-    /// Use a single LogItemViewModel instead of a collection because only one entry is shown.
-    /// </summary>
-    private LogItemViewModel _downloadLogItemViewModel = new(string.Empty);
-
-    public LogItemViewModel DownloadLogItemViewModel
-    {
-        get => _downloadLogItemViewModel;
-        private set => SetAndNotify(ref _downloadLogItemViewModel, value);
-    }
-
     #region LogThumbnails
 
     private readonly SemaphoreSlim _logThumbnailSemaphore = new(1, 1);
@@ -748,7 +736,7 @@ public class TaskQueueViewModel : Screen
             }
         };
 
-        if (Instances.VersionUpdateDialogViewModel.IsDebugVersion() || File.Exists("DEBUG") || File.Exists("DEBUG.txt"))
+        if (VersionHelper.IsDebugVersion() || File.Exists("DEBUG") || File.Exists("DEBUG.txt"))
         {
             // Debug 版专属的 ｢自动重载资源｣ 勾选项不进 README 演示截图
             CanShowAutoReload = !Bootstrapper.IsDemoMode;
@@ -826,17 +814,6 @@ public class TaskQueueViewModel : Screen
             return true;
         }
 
-        if (SettingsViewModel.VersionUpdateSettings.IsCheckingForUpdates)
-        {
-            var result = MessageBoxHelper.Show(
-                LocalizationHelper.GetString("UpdateConfirmExitText"),
-                LocalizationHelper.GetString("UpdateConfirmExitTitle"),
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-            Closing = false;
-            return result == MessageBoxResult.Yes;
-        }
-
         if (!Running)
         {
             // no need to confirm if no running task
@@ -892,9 +869,7 @@ public class TaskQueueViewModel : Screen
                 AchievementTrackerHelper.Instance.Unlock(AchievementIds.Time325);
             }
 
-            VersionUpdateSettingsUserControlModel.Instance.RefreshMirrorChyanCdkRemaining();
             HandleDatePromptUpdate();
-            HandleCheckForUpdates();
 
             InfrastTask.RefreshInfrastTimeRotationDisplay();
 
@@ -1021,38 +996,6 @@ public class TaskQueueViewModel : Screen
             await _runningState.UntilIdleAsync();
             await UpdateDatePromptAndStagesWeb();
             _isUpdatingDatePrompt = false;
-        });
-    }
-
-    private bool _isCheckingForUpdates;
-
-    private void HandleCheckForUpdates()
-    {
-        if (Bootstrapper.IsCoreInitSkipped)
-        {
-            // UI 预览模式：跳过版本与资源更新检查，避免联网弹窗与 Core 资源重载
-            return;
-        }
-
-        if (!SettingsViewModel.VersionUpdateSettings.UpdateAutoCheck)
-        {
-            return;
-        }
-
-        if (!NeedToCheckForUpdates() || _isCheckingForUpdates)
-        {
-            return;
-        }
-
-        _isCheckingForUpdates = true;
-        var delayTime = CalculateRandomDelay();
-        _ = Task.Run(async () => {
-            _logger.Information("waiting for update check: {DelayTime}", delayTime);
-            await Task.Delay(delayTime);
-            await Instances.VersionUpdateDialogViewModel.VersionUpdateAndAskToRestartAsync();
-            await ResourceUpdater.ResourceUpdateAndReloadAsync();
-
-            _isCheckingForUpdates = false;
         });
     }
 
@@ -1482,14 +1425,6 @@ public class TaskQueueViewModel : Screen
         return true;
     }
 
-    private static bool NeedToCheckForUpdates()
-    {
-        var now = DateTime.UtcNow.ToYjDateTime();
-
-        // yj历的 4/22 点
-        return now is { Minute: 0, Hour: 0 or 18 };
-    }
-
     /// <summary>
     /// Updates date prompt.
     /// </summary>
@@ -1689,30 +1624,8 @@ public class TaskQueueViewModel : Screen
             Instances.NotificationService.Clear(NotificationSource.TaskQueue);
             LogItemViewModels.Clear();
             LogCardViewModels.Clear();
-            DownloadLogItemViewModel = new(string.Empty);
             _logger.Information("Main windows log clear.");
             _logger.Information("{Empty}", string.Empty);
-        });
-    }
-
-    /// <summary>
-    /// Update the dedicated download log area. Thread-safe and will run on UI thread.
-    /// Mirrors previous logic which updated the first download log entry.
-    /// </summary>
-    /// <param name="fullText">The full text to show in download area.</param>
-    /// <param name="toolTip">Optional tooltip.</param>
-    public void UpdateDownloadLog(string fullText, string? toolTip = null)
-    {
-        Execute.OnUIThread(() => {
-            // Keep download area limited to a single entry.
-            if (string.IsNullOrEmpty(fullText))
-            {
-                DownloadLogItemViewModel = new(string.Empty);
-                return;
-            }
-
-            var log = new LogItemViewModel(fullText, UiLogColor.Download, toolTip: toolTip?.CreateTooltip());
-            DownloadLogItemViewModel = log;
         });
     }
 
@@ -2487,7 +2400,7 @@ public class TaskQueueViewModel : Screen
 
         var uiVersion = VersionUpdateSettingsUserControlModel.UiVersion;
         var coreVersion = VersionUpdateSettingsUserControlModel.CoreVersion;
-        if (!Instances.VersionUpdateDialogViewModel.IsDebugVersion() && uiVersion != coreVersion)
+        if (!VersionHelper.IsDebugVersion() && uiVersion != coreVersion)
         {
             AddLog(LocalizationHelper.GetStringFormat("VersionMismatch", uiVersion, coreVersion), UiLogColor.Error);
             return;
@@ -2834,7 +2747,7 @@ public class TaskQueueViewModel : Screen
 
         if (runScript)
         {
-            // 脚本运行期间持有 InterruptLock，防止等待空闲的自动更新安装/定时启动放行打断收尾
+            // 脚本运行期间持有 InterruptLock，防止等待空闲的定时启动放行打断收尾
             RunningState.Instance.LockInterrupt();
             try
             {

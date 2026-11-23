@@ -1411,7 +1411,6 @@ public partial class CopilotViewModel : Screen
             // 不支持的关卡
             AddLog(LocalizationHelper.GetStringFormat("UnsupportedStages", copilot.StageName), UiLogColor.Error, showTime: false);
             navigateName = FindStageName(copilot.Documentation?.Title ?? string.Empty);
-            _ = Task.Run(ResourceUpdater.ResourceUpdateAndReloadAsync);
             AchievementTrackerHelper.Instance.Unlock(AchievementIds.MapOutdated);
             return true;
         }
@@ -1498,7 +1497,6 @@ public partial class CopilotViewModel : Screen
         if (stages?.Any(i => i is null) is null or true)
         {
             AddLog(LocalizationHelper.GetStringFormat("UnsupportedStages", copilot.StageName), UiLogColor.Error, showTime: false);
-            _ = Task.Run(ResourceUpdater.ResourceUpdateAndReloadAsync);
             AchievementTrackerHelper.Instance.Unlock(AchievementIds.MapOutdated);
         }
 
@@ -2492,7 +2490,6 @@ public partial class CopilotViewModel : Screen
             }
 
             AddLog(LocalizationHelper.GetStringFormat("UnsupportedStages", name), UiLogColor.Error, showTime: false);
-            _ = Task.Run(ResourceUpdater.ResourceUpdateAndReloadAsync);
             AchievementTrackerHelper.Instance.Unlock(AchievementIds.MapOutdated);
             return false;
         }
@@ -2508,7 +2505,6 @@ public partial class CopilotViewModel : Screen
             if (!DataHelper.Operators.Any(op => op.Value.Name == DataHelper.GetLocalizedCharacterName(task.Name, "zh-cn")))
             {
                 AddLog(LocalizationHelper.GetStringFormat("CopilotIllegalOperName", task.Name), UiLogColor.Error, showTime: false);
-                _ = Task.Run(ResourceUpdater.ResourceUpdateAndReloadAsync);
                 AchievementTrackerHelper.Instance.Unlock(AchievementIds.MapOutdated);
                 ok = false;
             }
