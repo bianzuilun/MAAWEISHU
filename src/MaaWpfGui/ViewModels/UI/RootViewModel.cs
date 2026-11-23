@@ -67,24 +67,6 @@ public class RootViewModel : Conductor<Screen>.Collection.OneActive
 
         ShowVersionMismatchWarningOnStartup();
 
-        Task.Run(async () => {
-            await Instances.AnnouncementDialogViewModel.CheckAndDownloadAnnouncement();
-            if (Instances.AnnouncementDialogViewModel.DoNotRemindThisAnnouncementAgain)
-            {
-                return;
-            }
-
-            if (Instances.AnnouncementDialogViewModel.DoNotShowAnnouncement)
-            {
-                return;
-            }
-
-            if (Instances.AnnouncementDialogViewModel.AnnouncementInfo != string.Empty)
-            {
-                _ = Execute.OnUIThreadAsync(() => Instances.WindowManager.ShowWindow(Instances.AnnouncementDialogViewModel));
-            }
-        });
-
         _ = StartupIntegrityCheckAsync();
 
         // 主窗口已显示，此时弹窗不会导致 WPF 因无窗口而退出
@@ -240,7 +222,7 @@ public class RootViewModel : Conductor<Screen>.Collection.OneActive
                 catch (Exception e)
                 {
                     // 不知道会不会有异常，先捕获一下
-                    Logger.Warning("TaskbarManager Exception: " + e.Message);
+                    _logger.Warning("TaskbarManager Exception: " + e.Message);
                 }
             });
         }

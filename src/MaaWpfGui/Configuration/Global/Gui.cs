@@ -98,7 +98,7 @@ public class Gui : NotifyPropertyChangedWithValue
     /// </summary>
     public Dictionary<MaaHotKeyAction, MaaHotKey?> HotKeys { get; set; } = [];
 
-    public int GuideStep { get; set; } = 0;
+    public int GuideStep { get; set; } = 6;
 
     public Background Background { get; set; } = new();
 

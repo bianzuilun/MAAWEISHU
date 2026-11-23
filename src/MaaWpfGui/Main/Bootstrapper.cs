@@ -45,6 +45,7 @@ using MaaWpfGui.States;
 using MaaWpfGui.Utilities;
 using MaaWpfGui.ViewModels.UI;
 using MaaWpfGui.ViewModels.UserControl.Settings;
+using MaaWpfGui.Views.Dialogs;
 using MaaWpfGui.WineCompat;
 using Microsoft.Win32;
 using Serilog;
@@ -462,6 +463,9 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
 
         ConfigConverter.ConvertConfig();
         ETagCache.Load();
+
+        // 初始设置指引已去掉。旧配置里 GuideStep 仍可能是 0，这里在界面创建前标成已完成。
+        ConfigFactory.Root.Gui.GuideStep = SettingsViewModel.GuideMaxStep;
 
         ApplyDemoModeConfigOverrides();
 

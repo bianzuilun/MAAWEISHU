@@ -74,7 +74,7 @@
                     IsChecked="{Binding OpenPcClientAfterLaunch}" />
                 <controls:TooltipBlock TooltipText="{DynamicResource OpenPcClientAfterLaunchTip}" />
             </StackPanel>
-            <StackPanel>
+            <StackPanel
                 Margin="10"
                 Orientation="Horizontal"
                 Visibility="{c:Binding '!IsPCConnectConfig',

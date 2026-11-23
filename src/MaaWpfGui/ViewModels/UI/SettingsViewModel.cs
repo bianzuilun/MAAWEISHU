@@ -797,17 +797,8 @@ public class SettingsViewModel : Screen
     [UsedImplicitly]
     public void RestartGuide()
     {
-        GuideStepIndex = 0;
-        TaskSettingVisibilities.Guide = true;
-        var result = MessageBoxHelper.Show(
-            LocalizationHelper.GetString("RestartGuidePrompt"),
-            LocalizationHelper.GetString("Tip"),
-            MessageBoxButton.OKCancel,
-            MessageBoxImage.Question);
-        if (result == MessageBoxResult.OK)
-        {
-            Bootstrapper.ShutdownAndRestartWithoutArgs();
-        }
+        GuideStepIndex = GuideMaxStep;
+        TaskSettingVisibilities.Guide = false;
     }
 
     /// <summary>
@@ -1305,49 +1296,11 @@ public class SettingsViewModel : Screen
         (sender as ComboBox)?.MakeComboBoxSearchable();
     }
 
-    private bool _isCheckingAnnouncement = false;
-
-    public bool IsCheckingAnnouncement
-    {
-        get => _isCheckingAnnouncement;
-        set {
-            SetAndNotify(ref _isCheckingAnnouncement, value);
-        }
-    }
-
     // UI 绑定的方法
     [UsedImplicitly]
-    public async Task CheckAndDownloadAnnouncement()
+    public Task CheckAndDownloadAnnouncement()
     {
-        if (IsCheckingAnnouncement)
-        {
-            return;
-        }
-
-        IsCheckingAnnouncement = true;
-
-        try
-        {
-            if (Instances.AnnouncementDialogViewModel.View is System.Windows.Window window)
-            {
-                if (window.WindowState == WindowState.Minimized)
-                {
-                    window.WindowState = WindowState.Normal;
-                }
-
-                window.Activate();
-            }
-            else
-            {
-                Instances.WindowManager.ShowWindow(Instances.AnnouncementDialogViewModel);
-            }
-
-            await Instances.AnnouncementDialogViewModel.CheckAndDownloadAnnouncement();
-        }
-        finally
-        {
-            IsCheckingAnnouncement = false;
-        }
+        return Task.CompletedTask;
     }
 
     /// <summary>

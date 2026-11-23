@@ -217,7 +217,16 @@ public class GarrisonProtocolUserControlModel : PropertyChangedBase
         var launcher = FindLauncherScript()!;
         var python = string.IsNullOrWhiteSpace(PythonPath) ? "python" : PythonPath.Trim();
         var farm = Path.GetFullPath(FarmDir.Trim());
+        var requested = string.IsNullOrWhiteSpace(ModelPath) ? null : NormalizeNetPath(ModelPath.Trim());
         var net = ResolveNetPath(farm, ModelPath);
+        if (requested is not null && !string.Equals(requested, net, StringComparison.OrdinalIgnoreCase))
+        {
+            Instances.TaskQueueViewModel.AddLog(
+                net is null
+                    ? $"模型路径打不开：{requested}，目录里也没有 models/ppo_019，改用规则表。"
+                    : $"模型路径打不开：{requested}，改用 {net}",
+                UiLogColor.Warning);
+        }
         var stopFile = Path.Combine(farm, "rl_stop");
         try
         {
@@ -482,11 +491,26 @@ public class GarrisonProtocolUserControlModel : PropertyChangedBase
     {
         if (!string.IsNullOrWhiteSpace(modelPath))
         {
-            return NormalizeNetPath(modelPath.Trim());
+            var normalized = NormalizeNetPath(modelPath.Trim());
+            if (IsUsableNetPath(normalized))
+            {
+                return normalized;
+            }
         }
 
         var fallback = Path.Combine(farmDir, "models", "ppo_019");
         return NetExists(fallback) ? fallback : null;
+    }
+
+    private static bool IsUsableNetPath(string net)
+    {
+        if (net.Contains(".zip" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)
+            || net.Contains(".zip/", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return NetExists(net);
     }
 
     private static string NormalizeNetPath(string path)
