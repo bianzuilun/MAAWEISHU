@@ -29,7 +29,6 @@ using MaaWpfGui.Configuration.Factory;
 using MaaWpfGui.Constants;
 using MaaWpfGui.Extensions;
 using MaaWpfGui.Helper;
-using MaaWpfGui.ViewModels.Dialogs;
 using MaaWpfGui.ViewModels.UI;
 using MaaWpfGui.ViewModels.UserControl.Settings;
 using Serilog;
@@ -276,36 +275,7 @@ public class HttpService : IHttpService
             var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             await using (var tempFileStream = new FileStream(fullFilePathWithTemp, FileMode.Create, FileAccess.Write))
             {
-                // 记录初始化
-                long value = 0;
-                int valueInOneSecond = 0;
-                long fileMaximum = response.Content.Headers.ContentLength ?? 1;
-                DateTime beforeDt = DateTime.Now;
-
-                // Dangerous action
-                VersionUpdateDialogViewModel.OutputDownloadProgress();
-
-                byte[] buffer = new byte[81920];
-                int byteLen = await stream.ReadAsync(buffer, 0, buffer.Length);
-
-                while (byteLen > 0)
-                {
-                    valueInOneSecond += byteLen;
-                    double ts = DateTime.Now.Subtract(beforeDt).TotalSeconds;
-                    if (ts > 1)
-                    {
-                        beforeDt = DateTime.Now;
-                        value += valueInOneSecond;
-
-                        // Dangerous action
-                        VersionUpdateDialogViewModel.OutputDownloadProgress(value, fileMaximum, valueInOneSecond, ts);
-                        valueInOneSecond = 0;
-                    }
-
-                    // 输入输出
-                    tempFileStream.Write(buffer, 0, byteLen);
-                    byteLen = await stream.ReadAsync(buffer, 0, buffer.Length);
-                }
+                await stream.CopyToAsync(tempFileStream).ConfigureAwait(false);
             }
 
             File.Copy(fullFilePathWithTemp, fullFilePath, true);

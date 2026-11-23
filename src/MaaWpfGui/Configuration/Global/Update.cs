@@ -11,52 +11,16 @@
 // but WITHOUT ANY WARRANTY
 // </copyright>
 #nullable enable
-using MaaWpfGui.Constants.Enums;
 using MaaWpfGui.Models;
-using static MaaWpfGui.ViewModels.UserControl.Settings.VersionUpdateSettingsUserControlModel;
 
 namespace MaaWpfGui.Configuration.Global;
 
 /// <summary>
-/// 更新设置(全局)
+/// 网络代理设置（全局）。JSON 节点名保持 ｢Update｣ 以兼容既有配置。
 /// </summary>
 public partial class Update : NotifyPropertyChangedWithValue
 {
-    public string Name { get; set; } = string.Empty;
-
-    public string UpdatePackage { get; set; } = string.Empty;
-
-    public bool IsFirstBoot { get; set; }
-
-    public bool DoNotShowUpdate { get; set; }
-
-    public UpdateVersionType VersionType { get; set; } = UpdateVersionType.Stable;
-
-    public bool AllowNightlyUpdates { get; set; }
-
-    public bool HasAcknowledgedNightlyWarning { get; set; }
-
-    public UpdateSource UpdateSource { get; set; } = UpdateSource.GitHub;
-
-    public bool ForceGithubGlobalSource { get; set; }
-
-    public string MirrorChyanCdk { get; set; } = string.Empty;
-
-    public long MirrorChyanCdkExpiredTime { get; set; }
-
-    public bool CheckOnStartup { get; set; } = true;
-
-    public bool CheckOnSchedule { get; set; }
-
     public string Proxy { get; set; } = string.Empty;
 
     public string ProxyType { get; set; } = "Http";
-
-    public bool AutoDownloadUpdatePackage { get; set; } = true;
-
-    public bool AutoInstallUpdatePackage { get; set; }
-
-    public bool ShowUpdaterConsole { get; set; }
-
-    public bool ShowUpdaterProgress { get; set; } = true;
 }

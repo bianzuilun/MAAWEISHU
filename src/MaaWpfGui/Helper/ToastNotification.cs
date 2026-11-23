@@ -378,17 +378,6 @@ public class ToastNotification : IDisposable
     }
 
     /// <summary>
-    /// 显示更新版本的通知
-    /// </summary>
-    /// <param name="row">内容行数</param>
-    public void ShowUpdateVersion(uint row = 3)
-    {
-        ShowMore(row: row,
-                sound: NotificationSounds.Notification,
-                hints: NotificationHint.NewVersion);
-    }
-
-    /// <summary>
     /// 直接显示通知内容
     /// </summary>
     /// <param name="message">显示内容</param>

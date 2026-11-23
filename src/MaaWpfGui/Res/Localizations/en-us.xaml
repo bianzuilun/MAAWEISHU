@@ -43,7 +43,7 @@
     <system:String x:Key="TransitionSpeedFast">Fast</system:String>
     <system:String x:Key="TransitionSpeedNone">None</system:String>
     <system:String x:Key="HotKeySettings">HotKeys</system:String>
-    <system:String x:Key="UpdateSettings">Update</system:String>
+    <system:String x:Key="UpdateSettings">Version</system:String>
     <system:String x:Key="AchievementSettings">Achievements</system:String>
     <system:String x:Key="AboutUs">About us</system:String>
     <system:String x:Key="IssueReport">Issue Report</system:String>
@@ -1628,13 +1628,13 @@ Right-click: select this job and exit multi-job mode</system:String>
     <system:String x:Key="DelegatedUpdateFailureReasonPackageError">The update package or its extracted files may be corrupted or incomplete.</system:String>
     <system:String x:Key="DelegatedUpdateFailureReasonUnknown">Unknown reason. See gui.log in the debug folder for details.</system:String>
     <system:String x:Key="UpdateApplyMissingUpdater">The update could not continue because MAA.Updater.exe is missing, so the external updater could not be started. This update has been canceled. The file may have been deleted manually, or it may have been blocked or removed by security software. If security software caused this, please check its quarantine area, restore the file, and {key=SecuritySoftwareWhitelistTips}\n\n{key=FullPackageUpgradeTips}</system:String>
-    <system:String x:Key="ResourceBroken">The resources are damaged. Try auto repair (download the full package again), or continue for now and update later by dragging in a local full package.\n\n{key=FullPackageUpgradeTips}</system:String>
+    <system:String x:Key="ResourceBroken">The resources are damaged. Please download the full package again.\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityCheckTitle">Missing installation files</system:String>
     <system:String x:Key="ResourceIntegrityCheckDesc">{0} installation file(s) are missing ({1}), and some features may not work. The files may have been blocked or removed by security software, or deleted manually. If security software caused this, please check its quarantine area, restore the files, and {key=SecuritySoftwareWhitelistTips}\n\nYou can also reinstall manually as described below:\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityRepairYes">Repair automatically (download the full package and restore after restart)</system:String>
     <system:String x:Key="ResourceIntegrityRepairNo">Not now, continue starting</system:String>
     <system:String x:Key="CoreLoadingTip">The MAA core is still loading. Please try again shortly.</system:String>
-    <system:String x:Key="ResourceBrokenTaskBlocked">The resources are damaged, tasks cannot be started. Repair the resources as prompted at startup, or download the full package again and restart MAA.</system:String>
+    <system:String x:Key="ResourceBrokenTaskBlocked">The resources are damaged, tasks cannot be started. Please download the full package again and restart MAA.</system:String>
     <system:String x:Key="ResourceIntegrityRepairDownloading">Downloading the full package to repair the installation…</system:String>
     <system:String x:Key="ResourceIntegrityRepairFailed">Automatic repair failed. Please follow the instructions below to fix it manually.\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityRepairCanceled">Automatic repair canceled. You will be reminded again on the next startup.</system:String>
@@ -1988,7 +1988,7 @@ Right-click: select this job and exit multi-job mode</system:String>
     <system:String x:Key="Click">Click</system:String>
     <system:String x:Key="Swipe">Swipe</system:String>
     <system:String x:Key="SetUnitLocation">Set Unit Location</system:String>
-    <system:String x:Key="UnsupportedLevel">Unsupported stage, please check the stage name or go to ｢{key=Settings} - {key=UpdateSettings} - {key=ResourceUpdate}｣ and try updating the resource version!</system:String>
+    <system:String x:Key="UnsupportedLevel">Unsupported stage, please check the stage name!</system:String>
     <system:String x:Key="Copilot.UnsupportedSkill">{0} does not support Skill {1}, so the Skill will no longer be selected.</system:String>
     <system:String x:Key="Copilot.EliteEmpty">{0} No Elite Level requirement was set, but the requirement for other attributes is Elite {1}; this has been auto-filled.</system:String>
     <system:String x:Key="Copilot.EliteAjust">{0} Was set to require Elite {1}, but the requirement for other attributes is Elite {2}; this has been auto-adjusted.</system:String>

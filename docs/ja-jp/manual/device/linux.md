@@ -68,7 +68,6 @@ MAA Wine Bridge で生成された `MaaDesktopIntegration.so` を `MAA.exe` と�
 - Wine-staging ユーザーは、MAA が Wine 環境を正しく検出できるように、`winecfg` の `Wine バージョンを隠す` オプションを無効にする必要があります。
 - Wine の Light テーマは WPF で一部のテキストカラーに異常を引き起こすため、`winecfg` でテーマなし（Windows クラシックテーマ）に切り替えることをお勧めします。
 - Wine は古い XEmbed トレイアイコンを使用しており、GNOME では正常に動作しない可能性があります。
-- Linux ネイティブ MaaCore を使用している場合、自動更新はサポートされていません（~~更新プログラム：Windows 版をダウンロードすべきでしょうか~~）
 
 ### Python を使用する
 

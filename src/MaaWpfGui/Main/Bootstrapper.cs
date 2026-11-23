@@ -45,7 +45,6 @@ using MaaWpfGui.States;
 using MaaWpfGui.Utilities;
 using MaaWpfGui.ViewModels.UI;
 using MaaWpfGui.ViewModels.UserControl.Settings;
-using MaaWpfGui.Views.Dialogs;
 using MaaWpfGui.WineCompat;
 using Microsoft.Win32;
 using Serilog;
@@ -447,8 +446,7 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
         ConfigurationHelper.Load();
         LocalizationHelper.Load();
 
-        // 单实例门禁先于一切会改动安装状态的启动逻辑（待更新包应用、更新结果消费、配置迁移）：
-        // 常驻实例持有互斥锁期间，第二实例须在此处退让唤醒，不得在拿锁前进更新流程
+        // 单实例门禁先于配置迁移：常驻实例持有互斥锁期间，第二实例须在此处退让唤醒
         if (!HandleMultipleInstances())
         {
             FlushLogAndExit();
@@ -457,9 +455,7 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
 
         _hasMutex = true;
 
-        ConsumeDelegatedUpdateResult();
-
-        if (!VerifyInstallLocation() || !TryApplyPendingUpdatePackage())
+        if (!VerifyInstallLocation())
         {
             return;
         }
@@ -503,7 +499,7 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
     /// <param name="launchDir">启动时的工作目录，相对路径参数按此解析。</param>
     private static void ParseEarlyLaunchArgs(string[] args, string launchDir)
     {
-        // 尽早解析 skip 参数：pending 更新早退重启需要原样转发
+        // 尽早解析 skip 参数：定时唤醒等重启链路需要原样转发
         _skipStartupAutoRun = args.Any(arg => string.Equals(arg, SkipStartupAutoRunArg, StringComparison.OrdinalIgnoreCase));
         if (_skipStartupAutoRun)
         {
@@ -657,25 +653,6 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
     }
 
     /// <summary>
-    /// 消费上次委托外部 updater 的结果标志（成功仅记日志，失败置资源损坏标志并放行启动）。
-    /// </summary>
-    private static void ConsumeDelegatedUpdateResult()
-    {
-        if (PendingUpdateApplier.TryConsumeDelegatedUpdateSuccess())
-        {
-            _logger.Information("Delegated pending update completed successfully");
-        }
-
-        if (PendingUpdateApplier.TryReadDelegatedUpdateFailure(out string delegatedUpdateFailureReason))
-        {
-            // 上次委托更新失败：标志文件保留供后续启动检测，此处仅置资源损坏标志并放行启动，
-            // 修复弹窗须等主窗口显示后（AsstProxy.Init）再弹，避免成为唯一窗口导致进程意外退出
-            _logger.Error("Delegated pending update failed. Reason: {Reason}", delegatedUpdateFailureReason);
-            MarkResourceBroken();
-        }
-    }
-
-    /// <summary>
     /// 检查安装位置是否受支持。
     /// </summary>
     /// <returns>是否继续启动；false 时已弹窗并请求退出。</returns>
@@ -698,53 +675,6 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
             MessageBoxImage.Error);
         FlushLogAndExit();
         return false;
-    }
-
-    /// <summary>
-    /// 应用待处理的更新包：委托外部 updater 或进程内应用，成功后早退重启。
-    /// </summary>
-    /// <returns>是否继续启动；false 时已请求退出或已触发重启。</returns>
-    private static bool TryApplyPendingUpdatePackage()
-    {
-        if (!PendingUpdateApplier.HasPendingUpdatePackage())
-        {
-            return true;
-        }
-
-        _logger.Information("Pending update package detected, applying before full startup");
-        var pendingUpdateResult = PendingUpdateApplier.TryApplyPendingUpdatePackage();
-        if (pendingUpdateResult.Delegated)
-        {
-            _logger.Information("Pending update package handed off to external updater, exiting current process");
-            FlushLogAndExit();
-            return false;
-        }
-
-        if (pendingUpdateResult.Succeeded)
-        {
-            RestartAfterPendingUpdateEarly();
-            return false;
-        }
-
-        if (pendingUpdateResult.Status == PendingUpdateApplyResult.StatusKind.MissingUpdaterExecutable)
-        {
-            _logger.Error("Pending update package could not be delegated because MAA.Updater.exe is missing. Reason: {Reason}", pendingUpdateResult.FailureReason);
-            ShowPendingUpdateMissingUpdaterDialog();
-            FlushLogAndExit();
-            return false;
-        }
-
-        if (pendingUpdateResult.RequiresManualRecovery)
-        {
-            // 进程内应用失败且安装已变动：写入失败标志持久化，与委托更新失败共用
-            // 主窗口显示后的修复弹窗路径，此处不退出
-            _logger.Error("Pending update package left the installation in an incomplete state. Reason: {Reason}", pendingUpdateResult.FailureReason);
-            PendingUpdateApplier.MarkDelegatedUpdateFailure(pendingUpdateResult.FailureReason ?? string.Empty);
-            MarkResourceBroken();
-        }
-
-        _logger.Warning("Pending update package could not be applied, continuing with normal startup");
-        return true;
     }
 
     /// <summary>
@@ -1184,18 +1114,10 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
             return;
         }
 
-        bool wasFirstBoot = Instances.VersionUpdateDialogViewModel.IsFirstBootAfterUpdate;
-
         Instances.WindowManager.ShowWindow(rootViewModel);
         Instances.InstantiateOnRootViewDisplayed(Container);
         StartInstanceActivationListener();
         StartInstanceKeepAwakeListener();
-
-        // 如果 IsFirstBootAfterUpdate 从 false 变为 true，说明这次启动只是解压更新包，不用执行后续逻辑
-        if (!wasFirstBoot && Instances.VersionUpdateDialogViewModel.IsFirstBootAfterUpdate)
-        {
-            return;
-        }
 
         if (IsDemoMode)
         {
@@ -1236,40 +1158,37 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
         Log.CloseAndFlush();
         base.OnExit(e);
 
-        if (!_isRestartingAfterUpdate)
-        { // 如果是更新后重启，则不删除 .old
-            if (Directory.Exists(".old"))
-            {
-                try
-                { // 退出时移除.old
-                    Directory.Delete(".old", true);
-                }
-                catch (Exception)
-                { // ignored
-                }
+        if (Directory.Exists(".old"))
+        {
+            try
+            { // 退出时移除.old
+                Directory.Delete(".old", true);
             }
-
-            foreach (var file in new DirectoryInfo(".").EnumerateFiles("*.old"))
-            {
-                try
-                {
-                    file.Delete();
-                }
-                catch (Exception)
-                { // ignored
-                }
+            catch (Exception)
+            { // ignored
             }
+        }
 
-            // 清理残留的 OTA 更新包临时文件
-            foreach (var file in new DirectoryInfo(".").EnumerateFiles("MAAComponent-OTA*.temp"))
+        foreach (var file in new DirectoryInfo(".").EnumerateFiles("*.old"))
+        {
+            try
             {
-                try
-                {
-                    file.Delete();
-                }
-                catch (Exception)
-                { // ignored
-                }
+                file.Delete();
+            }
+            catch (Exception)
+            { // ignored
+            }
+        }
+
+        // 清理残留的 OTA 更新包临时文件
+        foreach (var file in new DirectoryInfo(".").EnumerateFiles("MAAComponent-OTA*.temp"))
+        {
+            try
+            {
+                file.Delete();
+            }
+            catch (Exception)
+            { // ignored
             }
         }
 
@@ -1503,34 +1422,6 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
 #nullable restore
 
     /// <summary>
-    /// 在完整 GUI 尚未初始化前，应用待处理更新后立即重启。
-    /// 若当前进程已带 <see cref="SkipStartupAutoRunArg"/>，则原样转发给下一进程。
-    /// </summary>
-    private static void RestartAfterPendingUpdateEarly()
-    {
-        _logger.Information("Pending update package applied, restarting application");
-        Log.CloseAndFlush();
-        if (Environment.ProcessPath is not null)
-        {
-            var startInfo = new ProcessStartInfo {
-                FileName = Environment.ProcessPath,
-                WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
-                UseShellExecute = false,
-            };
-            foreach (string arg in GetForwardableRestartArgs())
-            {
-                startInfo.ArgumentList.Add(arg);
-            }
-
-            Process.Start(startInfo);
-        }
-
-        // 紧邻进程退出再释放互斥量，缩小释放后第三实例抢锁插进来的窗口
-        ReleaseInstanceMutex();
-        Environment.Exit(0);
-    }
-
-    /// <summary>
     /// 获取需要转发给下一进程的启动参数（当前转发 skip-startup-auto-run 与 keep-awake 及剩余时长）。
     /// </summary>
     /// <returns>需要转发的参数数组；无需转发时为空数组。</returns>
@@ -1562,26 +1453,6 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
 
         args.Add(KeepAwakeArg);
         args.Add(remainingMinutes.ToString(System.Globalization.CultureInfo.InvariantCulture));
-    }
-
-    /// <summary>
-    /// 若启动设置允许，返回 ｢更新后立即重启｣ 链应写入的参数；否则返回空。
-    /// 仅用于自动安装或更新提示中选择立即重启； ｢稍后｣ 手动启动不调用此方法。
-    /// </summary>
-    /// <returns>应写入的参数数组；选项关闭时为空数组。</returns>
-    public static string[] GetUpdateRestartArgsIfEnabled()
-    {
-        return ConfigFactory.CurrentConfig.Gui.StartUpSettings.SkipStartupAutoRunAfterUpdate
-            ? [SkipStartupAutoRunArg]
-            : [];
-    }
-
-    private static void ShowPendingUpdateMissingUpdaterDialog()
-    {
-        MessageBoxHelper.Show(
-            LocalizationHelper.GetString("UpdateApplyMissingUpdater"),
-            LocalizationHelper.GetString("Error"),
-            icon: MessageBoxImage.Error);
     }
 
     /// <summary>
@@ -1635,14 +1506,6 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
         Execute.OnUIThread(Application.Current.Shutdown);
     }
 
-    private static bool _isRestartingAfterUpdate;
-
-    public static void RestartAfterUpdate([CallerMemberName] string caller = "")
-    {
-        _isRestartingAfterUpdate = true;
-        ShutdownAndRestartWithoutArgs();
-    }
-
     public static void Shutdown([CallerMemberName] string caller = "")
     {
         _logger.Information("Shutdown called by `{Caller}`", caller);
@@ -1683,7 +1546,7 @@ public class Bootstrapper : Bootstrapper<RootViewModel>
     private static bool _isWaitingToRestart;
 
     /// <summary>
-    /// 等待空闲后重启。可选带上启动参数（如更新链的 <see cref="SkipStartupAutoRunArg"/>）。
+    /// 等待空闲后重启。可选带上启动参数。
     /// </summary>
     /// <param name="args">传给下一进程的参数；为空则无参重启。</param>
     /// <returns>表示异步等待的任务。</returns>

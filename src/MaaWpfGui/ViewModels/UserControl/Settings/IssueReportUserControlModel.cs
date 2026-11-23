@@ -415,7 +415,6 @@ public class IssueReportUserControlModel : PropertyChangedBase
     {
         // 其实不应该放这里，但懒得写一个新的方法，就塞到这里了
         AchievementTrackerHelper.Instance.Unlock(AchievementIds.ProblemFeedback);
-        VersionUpdateSettingsUserControlModel.Instance.HasAcknowledgedNightlyWarning = true;
     }
 
     private static void ShowGrowl(string message)

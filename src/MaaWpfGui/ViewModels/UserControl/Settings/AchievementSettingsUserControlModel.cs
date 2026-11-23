@@ -149,7 +149,7 @@ public class AchievementSettingsUserControlModel : PropertyChangedBase
             return;
         }
 
-        if (Instances.VersionUpdateDialogViewModel.IsDebugVersion())
+        if (VersionHelper.IsDebugVersion())
         {
             EnableDebugMode();
             SettingsViewModel.ShowEasterEggDialog(

@@ -43,7 +43,7 @@
     <system:String x:Key="TransitionSpeedFast">빠르게</system:String>
     <system:String x:Key="TransitionSpeedNone">애니메이션 없음</system:String>
     <system:String x:Key="HotKeySettings">단축키 설정</system:String>
-    <system:String x:Key="UpdateSettings">업데이트</system:String>
+    <system:String x:Key="UpdateSettings">버전 정보</system:String>
     <system:String x:Key="AchievementSettings">도전과제</system:String>
     <system:String x:Key="AboutUs">정보</system:String>
     <system:String x:Key="IssueReport">문제 보고</system:String>
@@ -1630,13 +1630,13 @@ C:\leidian\LDPlayer9
     <system:String x:Key="DelegatedUpdateFailureReasonPackageError">업데이트 패키지 또는 압축 해제된 파일이 손상되었거나 불완전할 수 있습니다.</system:String>
     <system:String x:Key="DelegatedUpdateFailureReasonUnknown">원인을 알 수 없습니다. 자세한 내용은 debug 폴더의 gui.log를 확인해 주세요.</system:String>
     <system:String x:Key="UpdateApplyMissingUpdater">MAA.Updater.exe가 없어 외부 업데이트 프로그램을 시작할 수 없어 업데이트를 계속할 수 없습니다. 이번 업데이트는 취소되었습니다. 이 파일은 수동으로 삭제되었거나 보안 소프트웨어에 의해 차단 또는 삭제되었을 수 있습니다. 보안 소프트웨어가 원인이라면 해당 소프트웨어의 격리소를 확인해 파일을 복원하고, {key=SecuritySoftwareWhitelistTips}\n\n{key=FullPackageUpgradeTips}</system:String>
-    <system:String x:Key="ResourceBroken">리소스 파일이 손상되었습니다. 자동 복구(전체 패키지 다운로드)를 시도하거나, 지금은 계속 진행한 뒤 나중에 로컬 전체 패키지를 끌어다 놓아 업데이트하세요.\n\n{key=FullPackageUpgradeTips}</system:String>
+    <system:String x:Key="ResourceBroken">리소스 파일이 손상되었습니다. 전체 패키지를 다시 다운로드하세요.\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityCheckTitle">설치 파일 누락</system:String>
     <system:String x:Key="ResourceIntegrityCheckDesc">설치 파일 {0}개가 누락된 것으로 확인되었습니다({1}). 일부 기능을 사용할 수 없을 수 있습니다. 파일이 보안 소프트웨어에 의해 차단 또는 삭제되었거나, 수동으로 삭제되었을 수 있습니다. 보안 소프트웨어가 원인이라면 해당 소프트웨어의 격리소를 확인해 파일을 복원하고, {key=SecuritySoftwareWhitelistTips}\n\n아래 안내에 따라 수동으로 재설치할 수도 있습니다:\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityRepairYes">자동 복구(전체 패키지 다운로드 및 재시작 후 복원)</system:String>
     <system:String x:Key="ResourceIntegrityRepairNo">나중에 처리</system:String>
     <system:String x:Key="CoreLoadingTip">MAA 코어를 아직 불러오는 중입니다. 잠시 후 다시 시도해 주세요.</system:String>
-    <system:String x:Key="ResourceBrokenTaskBlocked">리소스가 손상되어 작업을 시작할 수 없습니다. 시작 시 안내에 따라 리소스를 복구하거나, 전체 패키지를 다시 다운로드한 후 MAA를 재시작하세요.</system:String>
+    <system:String x:Key="ResourceBrokenTaskBlocked">리소스가 손상되어 작업을 시작할 수 없습니다. 전체 패키지를 다시 다운로드한 후 MAA를 재시작하세요.</system:String>
     <system:String x:Key="ResourceIntegrityRepairDownloading">설치를 복구하기 위해 전체 패키지를 다운로드하는 중…</system:String>
     <system:String x:Key="ResourceIntegrityRepairFailed">자동 복구에 실패했습니다. 안내에 따라 수동으로 처리해 주세요.\n\n{key=FullPackageUpgradeTips}</system:String>
     <system:String x:Key="ResourceIntegrityRepairCanceled">자동 복구가 취소되었습니다. 다음 시작 시 다시 알림이 표시됩니다.</system:String>
@@ -1990,7 +1990,7 @@ C:\leidian\LDPlayer9
     <system:String x:Key="Click">클릭</system:String>
     <system:String x:Key="Swipe">스와이프</system:String>
     <system:String x:Key="SetUnitLocation">유닛 좌표 설정</system:String>
-    <system:String x:Key="UnsupportedLevel">지원되지 않는 스테이지입니다. 스테이지 이름을 확인하거나 ｢{key=Settings} - {key=UpdateSettings} - {key=ResourceUpdate}｣ 로 이동하여 리소스 버전을 업데이트해 보세요!</system:String>
+    <system:String x:Key="UnsupportedLevel">지원되지 않는 스테이지입니다. 스테이지 이름을 확인하세요!</system:String>
     <system:String x:Key="Copilot.UnsupportedSkill">{0}은 {1} 스킬을 지원하지 않으므로, 스킬이 선택되지 않음</system:String>
     <system:String x:Key="Copilot.EliteEmpty">{0} 정예화 등급 요구 사항이 설정되지 않았지만, 다른 속성에 대한 요구 사항은 정예화 {1}입니다. 이 값은 자동으로 채워졌습니다.</system:String>
     <system:String x:Key="Copilot.EliteAjust">{0} 정예화 {1}을 요구하도록 설정되었지만, 다른 속성에 대한 요구 사항은 정예화 {2}입니다. 이 값은 자동으로 조정되었습니다.</system:String>

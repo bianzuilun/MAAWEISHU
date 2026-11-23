@@ -70,88 +70,27 @@ MAA updates come in two types of content:
 There is also a "navigation hot update" that triggers automatically to update the main interface prompts and event stage entries. A notification appears in the top-right corner upon success.
 :::
 
-### Update Channel
+### Release Types
 
-You can switch update channels in `Settings` - `Update Settings`:
+GitHub Releases ships three kinds of builds:
 
 - **Stable**: Fewer bugs, slower support for new features and themes. New features may take weeks to be supported.
 - **Beta**: May have minor bugs, faster support for new features and themes.
 - **Nightly**: Contains unstable features, for testing only. Do not discuss nightly issues elsewhere.
 
 ::: tip
-If the interface prompts that your version is too low and the minimum required version is beta, but you are already on the latest version, this means the feature is currently only available in the beta channel. Wait for the stable release or switch to beta to get it.
+If the interface prompts that your version is too low and the minimum required version is beta, the feature is currently only available in the beta build. Wait for the stable release or install the beta full package.
 :::
 
-### Auto Update
+### Getting a New Version
 
-In `Settings` - `Update Settings`, you can choose the update source:
+MAA no longer provides in-app automatic updates. Download the full package from [GitHub Releases](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases) (`MAA-<version>-win-<arch>.zip`, e.g. `MAA-v5.20.0-win-x64.zip`), extract it into a **new** folder, then copy the `config`, `data`, and `debug` folders from the old directory to keep your settings and logs (`cache` and `achievement` are optional). ⚠️ Do not overwrite the old folder directly.
 
-| Update Source              | Description                                                                                                                                                                                                |
-| :------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Global Source** (GitHub) | Software version pulled from GitHub; resource version uses [MirrorChyan](https://mirrorchyan.com/en/projects?rid=MAA) for free update detection, manually click `Resource Update` to download from GitHub. |
-| **MirrorChyan**            | Enter CDK to enable automatic updates for both software and resources, prioritizing high-speed CDN downloads. More stable and faster.                                                                      |
-
-You can toggle the following options in update settings:
-
-- `Check for updates on startup`
-- `Scheduled update check` (server local time 04:00 / 22:00, corresponding to daily reset and full sanity recovery times)
-- `Auto-download update packages`: When disabled, only notifications are shown; you can download the package yourself and drag it into MAA (see Manual Update below).
-- `Auto-install update packages`
-
-When a resource update is detected during a task, it will be automatically loaded when the system is idle, taking effect on the next task.
-
-### Manual Update
-
-If automatic downloads fail or your network is poor, you can manually download the update package and **drag the `.zip` file directly into the MAA main window** to complete the update. MAA identifies the package type and processes it: software packages mainly by filename; resource packages mainly by recognizing a GitHub resource-repo zip and parsing `version.json` inside.
-
-- Dragging **software update packages** (full / OTA): Supported since v6.8.0-beta.2.
-- Dragging **resource update packages**: Supported since v6.16.5.
-
-::: tip
-
-- Only packages downloaded from [GitHub Releases](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases) are supported. [MirrorChyan](https://mirrorchyan.com/en/projects?rid=MAA) packages have a different format and are for automatic updates only — **they cannot be dragged in**.
-- Do not run MAA **as an administrator** when using drag-and-drop updates. Otherwise, Windows privilege isolation may prevent update packages from being dragged in.
-
-:::
-
-#### Software Update Packages (Full / OTA)
-
-- Download the corresponding update package from [GitHub Releases](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases). Do not modify the filename format:
-  - **Full package**: `MAA-<version>-win-<arch>.zip`, e.g., `MAA-v5.20.0-win-x64.zip`.
-  - **OTA package**: `MAAComponent-OTA-<current_version>_<target_version>-win-<arch>.zip`. The source version must match your current version.
-- After dragging, MAA will automatically extract and apply the update on next restart.
-- **Full package updates require manual confirmation**: Full packages clean old files in the installation directory (preserving `config`, `data`, `debug`, `cache`, `achievement`, etc.). Ensure MAA is installed in a standalone folder.
-- **Update restrictions while the installation is incomplete**: When resources are corrupted or a previous update failed and has not recovered, MAA rejects OTA packages (both automatic updates and drag-and-drop) and only accepts full packages; dragging in a full package of the same version is also allowed for recovery.
-
-::: danger Full Package Update Risk
-If you place MAA directly in a disk root, Desktop, Downloads, or mix it with other programs/personal files at the same directory level, full package updates may delete sibling files. Always install MAA in a standalone folder and manually back up before updating.
-:::
-
-::: details Traditional method (without drag-and-drop)
-If your MAA version is too old to support drag-and-drop (before v6.8.0-beta.2), extract the full package into a **new** folder, then copy the `config`, `data`, and `debug` folders from the old directory to preserve your settings and logs (the `cache` and `achievement` folders are optional to keep). ⚠️ Do not overwrite the old folder directly — incorrect operations may cause resource corruption.
-:::
-
-#### Resource Update Packages
-
-- Download the resource repository zip from [GitHub](https://github.com/MaaAssistantArknights/MaaResource/archive/refs/heads/main.zip) (keep the GitHub direct-download layout, e.g. containing `MaaResource-main/resource/...`).
-- After dragging, MAA parses `version.json` inside the package to determine the resource version (packages older than the current one are rejected), then extracts and merges into the `resource` directory and reloads automatically.
-- Resource packages are incremental and do not delete existing resource files.
-- Without drag-and-drop, you can also manually extract and overwrite the `resource` folder (⚠️ incremental content — do not delete the original folder).
-
-#### Unsupported Packages
-
-If the dragged file is not one of the above update packages (e.g., software package filename mismatch, resource package not in GitHub zip layout, version mismatch, etc.), MAA will display a notification that it cannot be recognized.
-
-::: warning Package contents are not fully verified
-
-- **Software packages** (full / OTA): matched mainly by filename; the archive is **not** checked for the real architecture or version contents. Renaming (e.g. arm64 → x64) may still extract and install the wrong build. Do not change the original filename.
-- **Resource packages**: only checks for a GitHub direct-download zip layout and parses `version.json`; other resource files are **not** fully validated for completeness or correctness. Missing some files may still allow import.
-
-:::
+Resource files ship with the full package. You can also download [MaaResource](https://github.com/MaaAssistantArknights/MaaResource/archive/refs/heads/main.zip) and overwrite the `resource` folder (incremental content — do not delete the original folder).
 
 ## Additional Notes
 
 - Tasks on the left side of the main page can be dragged to change their order, as can facilities in the base management settings.
 - All click operations target random positions within buttons, following a normal distribution (higher probability at the center, decreasing with distance from center).
 - The core algorithms are developed in C++ with multi-level caching to minimize CPU and memory usage.
-- The software supports automatic updates ✿✿ ヽ(°▽°)ノ ✿. We recommend non-critical users try the beta version, which typically updates faster and has fewer bugs. (What MIUI? (╯‵□′)╯︵┻━┻)
+- We recommend non-critical users try the beta version, which typically updates faster and has fewer bugs. (What MIUI? (╯‵□′)╯︵┻━┻)
